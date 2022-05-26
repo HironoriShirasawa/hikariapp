@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="welcome">
+  <h1 class="title">ようこそHikaristのBASEへ!</h1>
+  <p class="subtitle">光市に興味がある、光市に行ってみたい、光市が好きな、そんなあなたのためのページです。</p>
+  <a class="btn btn-primary" href="{% url 'article_new' %}">記事を投稿する</a>
+</div>
+{% if articles %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>投稿者</th>
+      <th>投稿日</th>
+      <th>タイトル</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for article in articles %}
+    <tr>
+      <th>{{ article.created_by.username }}</th>
+      <th>{{ article.created_at }}</th>
+      <th><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></th>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>投稿はまだありません。</p>
+{% endif %}
+{% endblock %}

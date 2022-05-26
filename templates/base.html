@@ -1,0 +1,37 @@
+{% load static %}
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hikarist</title>
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  <link rel="stylesheet" href="{% static 'articles/css/style.css' %}">
+  {% block extraheader %}{% endblock %}
+</head>
+<body>
+  <nav class="navbar navbar-expand flex-md-row navbar-dark bg-dark">
+    <div class="container justify-content-between">
+      <a href="/" class="navbar-brand">Hikarist<br><small>顔の見えるデジタルへ</small></a>
+      <ul class="navbar-nav mr-md-2">
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">ログアウト</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'password_change' %}">パスワードの変更</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">ログイン</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">会員登録</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      {% block main %}{% endblock %}
+    </div>
+  </main>
+</body>
+</html>
