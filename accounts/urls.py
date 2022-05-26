@@ -1,5 +1,5 @@
 from django.contrib.auth import views
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from django.views.generic import CreateView
 from django.urls import path
 
@@ -12,7 +12,6 @@ urlpatterns = [
     success_url='/',
   ), name='signup'),
   path('login/', views.LoginView.as_view(
-    # form_class=EmailAuthenticationForm,
     redirect_authenticated_user=True,
     template_name='accounts/login.html',
   ), name='login'),

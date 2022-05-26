@@ -11,3 +11,6 @@ main {
   flex-direction: column;
 }
 
+.article-date {
+  margin-bottom: 1rem;
+}

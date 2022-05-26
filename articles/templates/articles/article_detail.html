@@ -1,14 +1,42 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hikarist</title>
-</head>
-<body>
-  <h2>{{ article.title }} by {{ article.created_by.username }}</h2>
-  <small>投稿日: {{ article.created_at }}</small>
-  <p>{{ article.post }}</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block main %}
+<h2>{{ article.title }} by {{ article.created_by.username }}</h2>
+
+<div class="article-date">
+  投稿日: {{ article.created_at|date:"DATETIME_FORMAT" }}
+  {% if user.is_authenticated and article.created_by_id == user.id %}
+  <a href="{% url 'article_edit' article.id %}">編集</a>
+  {% endif %}
+</div>
+
+<p>{{ article.post }}</p>
+
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">コメント一覧</h3>
+
+    {% if comments %}
+    {% for comment in comments %}
+    <hr/>
+    <p class="card-text">{{ comment.text }}</p>
+    <small class="text-muted">by {{ comment.commented_by.username }}さん</small>
+    {% endfor %}
+    {% else %}
+    <p>コメントはありません。</p>
+    {% endif %}
+  </div>
+  {% if user.is_authenticated %}
+  <div class="card-body">
+    <h4 class="card-title">コメントを投稿する</h4>
+    <form method="post" action="{% url 'comment_new' article.id %}">
+      {% csrf_token %}
+      {% bootstrap_form comment_form %}
+      {% bootstrap_button button_type="submit" content="コメント" %}
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+  

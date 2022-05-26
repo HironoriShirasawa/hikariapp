@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-from .models import Article
-from .forms import ArticleForm
+from .models import Article, Comment 
+from .forms import ArticleForm, CommentForm
 
 def top(request):
   articles = Article.objects.all()
@@ -38,7 +39,31 @@ def article_edit(request, article_id):
     form = ArticleForm(instance=article)
   return render(request, 'articles/article_edit.html', {'form': form})
   
-
+@login_required
 def article_detail(request, article_id):
   article = get_object_or_404(Article, pk=article_id)
-  return render(request, 'articles/article_detail.html', {'article': article})
+  comments = Comment.objects.filter(commented_to=article_id).all()
+  comment_form = CommentForm()
+
+  return render(request, "articles/article_detail.html", {
+    'article': article,
+    'comments': comments,
+    'comment_form': comment_form,
+  })
+
+@login_required
+def comment_new(request, article_id):
+  article = get_object_or_404(Article, pk=article_id)
+
+  form = CommentForm(request.POST)
+  if form.is_valid():
+    comment = form.save(commit=False)
+    comment.commented_to = article
+    comment.commented_by = request.user 
+    comment.save()
+    messages.add_message(request, messages.SUCCESS,
+                        "コメントを投稿しました。")
+  else:
+    messages.add_message(request, messages.ERROR,
+                        "コメントの投稿に失敗しました。")
+  return redirect('article_detail', article_id=article_id)
