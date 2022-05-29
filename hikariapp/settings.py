@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'articles.apps.ArticlesConfig',
     'django_bootstrap5',
     'accounts.apps.AccountsConfig',
+    'django_cleanup.apps.CleanupConfig',
+    'sorl.thumbnail'
     
 ]
 
