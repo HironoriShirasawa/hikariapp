@@ -12,6 +12,9 @@
 </div>
 
 <p>{{ article.post }}</p>
+{% if article.article_image %}
+<li class="nav-item"><img src="{{ article.article_image.url }}" alt="記事関連の画像です"></li>
+{% endif %}
 
 <div class="card">
   <div class="card-body">

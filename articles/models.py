@@ -31,6 +31,7 @@ class Article(models.Model):
   
   classification = models.TextField(choices=Classification.choices, verbose_name='分類')
   post = models.TextField('投稿内容')
+  article_image = models.ImageField(null=True, blank=True)
   created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 verbose_name="投稿者",
                                 on_delete=models.CASCADE)

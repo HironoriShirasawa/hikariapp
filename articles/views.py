@@ -14,7 +14,7 @@ def top(request):
 @login_required
 def article_new(request):
   if request.method == "POST":
-    form = ArticleForm(request.POST)
+    form = ArticleForm(request.POST, request.FILES)
     if form.is_valid():
       article = form.save(commit=False)
       article.created_by = request.user
@@ -31,7 +31,7 @@ def article_edit(request, article_id):
     return HttpResponseForbidden("この記事の編集は許可されていません。")
   
   if request.method == "POST":
-    form = ArticleForm(request.POST, instance=article)
+    form = ArticleForm(request.POST, request.FILES, instance=article)
     if form.is_valid():
       form.save()
       return redirect('article_detail', article_id=article_id)
