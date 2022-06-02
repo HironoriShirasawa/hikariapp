@@ -6,6 +6,9 @@ from sorl.thumbnail import get_thumbnail, delete
 
 import uuid
 
+resized_width = 500
+resized_height = 500
+
 def image_directory_path(instance, filename):
   return 'images/{}'.format(str(uuid.uuid4()), filename.split('.')[-1])
 
@@ -44,15 +47,16 @@ class Article(models.Model):
     super(Article, self).save(*args, **kwargs)
     temp_img_name = self.article_image.name
     if self.article_image.width > 500 or self.article_image.height > 500:
-      new_width = 500
-      new_height = 500
+      new_width = resized_width
+      new_height = resized_height
 
       resized = get_thumbnail(self.article_image, "{}x{}".format(new_width, new_height))
       name = resized.name.split('/')[-1]
       self.article_image.save(name, ContentFile(resized.read()), True)
       try:
         delete(temp_img_name)
-      except "NotFound":
+      except:
+        print('表示できる画像がありません')
         pass
   created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 verbose_name="投稿者",

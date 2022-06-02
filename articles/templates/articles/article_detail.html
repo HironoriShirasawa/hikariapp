@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 {% load django_bootstrap5 %}
+
+{% block extraheader %}
+<link rel="stylesheet" href="{% static 'articels/css/style.css'%}">
+{% endblock %}
+
 
 {% block main %}
 <h2>{{ article.title }} by {{ article.created_by.username }}</h2>
