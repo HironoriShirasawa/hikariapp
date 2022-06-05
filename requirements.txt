@@ -3,3 +3,5 @@ django-bootstrap5~=21.3
 pillow
 django_cleanup
 sorl_thumbnail
+requests
+datetime

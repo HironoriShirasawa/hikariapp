@@ -3,12 +3,15 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-
+import requests
+import re 
+from datetime import datetime
+from PIL import Image
 
 from .models import Article, Comment 
 from .forms import ArticleForm, CommentForm
 
-from PIL import Image
+
 
 #縦横比を保ったまま画像サイズを調整する関数を定義
 def keepAspectResize(path, size):
@@ -26,9 +29,30 @@ def keepAspectResize(path, size):
 
   return resized_image
 
+#降水確率を返す関数を定義
+city_code = "350030" #山口県(柳井市)のcityコード
+url = "https://weather.tsukumijima.net/api/forecast/city/" + city_code
+
+def weather(city_code, url):
+  response = requests.get(url)
+  weather_json = response.json()
+  now_hour = datetime.now().hour 
+  if 0 <= now_hour and now_hour < 6:
+    cor = weather_json['forecasts'][1]['chanceOfRain']['T00_06']
+  elif 6 <= now_hour and now_hour < 12:
+    cor = weather_json['forecasts'][1]['chanceOfRain']['T06_12']
+  elif 12 <= now_hour and now_hour < 18:
+    cor = weather_json['forecasts'][1]['chanceOfRain']['T12_18']
+  else:
+    cor = weather_json['forecasts'][1]['chanceOfRain']['T18_24']
+  return cor
+
+
+
 def top(request):
   articles = Article.objects.all()
-  context = {"articles": articles}
+  cor = weather(city_code, url)
+  context = {"articles": articles, "cor": cor}
   return render(request, "articles/top.html", context)
 
 @login_required
